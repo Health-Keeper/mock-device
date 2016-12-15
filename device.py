@@ -1,8 +1,10 @@
 # -*- coding: utf-8 -*-
+import datetime
 import threading
 import time
 import urllib.parse
 
+import numpy
 import requests
 
 
@@ -25,6 +27,8 @@ class Device(threading.Thread):
         self._stop_event = stop_event or threading.Event()
 
         self._url = None
+
+        year, month, day = self._init_birth(18, 100)
 
         self._parameters = {
             'id': self._id,  # constant
@@ -49,9 +53,9 @@ class Device(threading.Thread):
                 'longitude': None
             },
             'birth': {
-                'year': None,
-                'month': None,
-                'day': None
+                'year': year,
+                'month': month,
+                'day': day
             }
         }
 
@@ -94,3 +98,14 @@ class Device(threading.Thread):
                                    "'%s'.") % self._id)
 
         return requests.post(self._url, json=self._parameters)
+
+    @staticmethod
+    def _init_birth(min_age=18, max_age=100):
+        """ Generate random birth date """
+        age = int((max_age - min_age) * numpy.random.beta(2, 4) + min_age)
+
+        year = datetime.date.today().year - age
+        month = 1 + numpy.random.randint(12)
+        day = 1 + numpy.random.randint(28)
+
+        return year, month, day
