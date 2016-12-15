@@ -18,9 +18,9 @@ Mocked IoT devices for testing purposes
   - [ ] GPS coordinates
     - [ ] Longitude
     - [ ] Latitude
-  - [ ] Date of birth
-    - [ ] Year
-    - [ ] Month
-    - [ ] Day
+  - [x] Date of birth
+    - [x] Year
+    - [x] Month
+    - [x] Day
 - [x] REST Client
 - [ ] Startup script (to run devices simultaneously)
