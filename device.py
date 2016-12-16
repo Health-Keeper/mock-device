@@ -130,7 +130,9 @@ class Device(threading.Thread):
                                    "'%s'.") % self._id)
 
         # Testing
-        print(self._id)
+        with self._PRINT_LOCK:
+            print(self._id)
+            
         # return self._session.post(self._url, json=self._parameters)
 
 
