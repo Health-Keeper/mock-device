@@ -142,6 +142,8 @@ class Device(threading.Thread):
 
         delta_time = self._parameters['timestamp'] - old_timestamp
 
+        self._parameters['steps'] = self._steps(self._delay)
+
 
     def _send(self):
         """ Send device parameters to target server """
