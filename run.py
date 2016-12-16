@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 import argparse
 import atexit
+import resource
 import time
 
 import numpy
@@ -20,6 +21,7 @@ class Startup(object):
         self._devices = [Device(device_id) for device_id in range(n_devices)]
 
         atexit.register(self.stop)
+
 
     def start(self):
         """ Start devices """
@@ -41,12 +43,21 @@ class Startup(object):
         for device in self._devices:
             device.ready()
 
+        # Show memory peak usage
+        memory_usage = resource.getrusage(
+            resource.RUSAGE_SELF | resource.RUSAGE_CHILDREN
+        ).ru_maxrss / 1024
+
+        print("Memory used: %.2f KiB" % memory_usage)
+
+
     def stop(self):
         """ Stop devices """
         for device in self._devices:
             if not device.is_running():
                 continue
             device.stop()
+
 
     @staticmethod
     def application(argv=None):

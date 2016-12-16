@@ -44,7 +44,7 @@ class Device(threading.Thread):
         ldl = self._init_cholesterol_ldl(90, 200)
         hdl = self._init_cholesterol_hdl(30, 70)
 
-        steps = self._init_steps(delay)
+        steps = self._steps(delay)
 
         pulse = self._init_pulse(60,100)
 
