@@ -1,6 +1,10 @@
 # -*- coding: utf-8 -*-
 import atexit
 import argparse
+import time
+
+import numpy
+import progressbar
 
 from device import Device
 
@@ -15,9 +19,23 @@ class Startup(object):
         atexit.register(self.stop)
 
     def start(self):
+        i = 0
+        with progressbar.ProgressBar(max_value=len(self._devices), widgets=[
+                "Devices: ", progressbar.Counter(), " ",
+                progressbar.Bar(),
+                " ", progressbar.Percentage()
+        ]) as bar:
+            for device in self._devices:
+                time.sleep(numpy.random.uniform())
+
+                device.bind_server(self._address, self._port)
+                device.start()
+
+                bar.update(i)
+                i += 1
+
         for device in self._devices:
-            device.bind_server(self._address, self._port)
-            device.run()
+            device.ready()
 
     def stop(self):
         for device in self._devices:
@@ -54,4 +72,4 @@ if __name__ == '__main__':
     # Wait for user interruption
     input('Windows: Ctrl-Z+Enter')
 
-    startup.stop()
+    # startup.stop()

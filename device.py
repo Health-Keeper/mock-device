@@ -3,6 +3,7 @@ import datetime
 import threading
 import time
 import urllib.parse
+import sys
 
 import numpy
 import requests
@@ -11,20 +12,24 @@ import requests
 class Device(threading.Thread):
     """ Mocked IoT device """
 
+    _PRINT_LOCK = threading.Lock()
+
     URL_SCHEME = 'http'
     URL_PATH = '/api/device/send'
     URL_PARAMS = ''
     URL_QUERY = ''
     URL_FRAGMENT = ''
 
-    def __init__(self, device_id, delay=10, stop_event=None):
+
+    def __init__(self, device_id, delay=1):
         """ Initialize parameters """
-        super()
+        threading.Thread.__init__(self)
 
         self._id = device_id
         self._delay = delay
 
-        self._stop_event = stop_event or threading.Event()
+        self._stop_event = threading.Event()
+        self._ready_event = threading.Event()
 
         self._url = None
 
@@ -59,10 +64,11 @@ class Device(threading.Thread):
             }
         }
 
+
     def bind_server(self, address, port):
         """ Bind target server to the device """
         components = (self.URL_SCHEME,
-                      ':'.join(address, port),
+                      ':'.join([address, str(port)]),
                       self.URL_PATH,
                       self.URL_PARAMS,
                       self.URL_QUERY,
@@ -70,34 +76,61 @@ class Device(threading.Thread):
 
         self._url = urllib.parse.urlunparse(components)
 
+
     def run(self):
         """ Run device thread """
         while self.is_running():
             self._stop_event.wait(self._delay)
-            self._update()
-            self._send()
+            try:
+                self._update()
+                self._send()
+            except Exception as e:
+                with self._PRINT_LOCK:
+                    print(e, file=sys.stderr)
+
 
     def stop(self):
         """ Stop device thread execution """
         self._stop_event.set()
 
+
     def is_running(self):
         """ Determine if device thread is running """
         return not self._stop_event.is_set()
 
+
+    def ready(self):
+        """ Mark device as ready to operate """
+        self._ready_event.set()
+
+
+    def is_ready(self):
+        return self._ready_event.is_set()
+
+
     def _update(self):
         """ Update values of the parameters """
+        if not self.is_ready():
+            return
+
         old_timestamp = self._parameters['timestamp']
+
         self._parameters['timestamp'] = time.time()
+
         delta_time = self._parameters['timestamp'] - old_timestamp
+
 
     def _send(self):
         """ Send device parameters to target server """
+        if not self.is_ready():
+            return
+
         if self._url is None:
             raise ConnectionError(("No target server bound for device ID "
                                    "'%s'.") % self._id)
-        print(self._id)
-        # return requests.post(self._url, json=self._parameters)
+
+        return requests.post(self._url, json=self._parameters)
+
 
     @staticmethod
     def _init_birth(min_age=18, max_age=100):
