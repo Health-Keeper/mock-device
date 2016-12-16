@@ -48,3 +48,10 @@ class Startup(object):
 
 if __name__ == '__main__':
     startup = Startup.application()
+
+    startup.start()
+
+    # Wait for user interruption
+    input('Windows: Ctrl-Z+Enter')
+
+    startup.stop()

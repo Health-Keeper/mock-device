@@ -96,8 +96,8 @@ class Device(threading.Thread):
         if self._url is None:
             raise ConnectionError(("No target server bound for device ID "
                                    "'%s'.") % self._id)
-
-        return requests.post(self._url, json=self._parameters)
+        print(self._id)
+        # return requests.post(self._url, json=self._parameters)
 
     @staticmethod
     def _init_birth(min_age=18, max_age=100):
