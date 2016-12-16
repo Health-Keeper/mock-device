@@ -35,7 +35,7 @@ class Device(threading.Thread):
             'timestamp': time.time(),
             'blood_pressure': {
                 'systolic': None,
-                'diastolic': None
+                'diastolic': None,
             },
             'pulse': None,
             'saturation': None,
@@ -45,17 +45,17 @@ class Device(threading.Thread):
             'blood_alcohol_content': None,
             'cholesterol': {
                 'ldl': None,
-                'hdl': None
+                'hdl': None,
             },
             'steps': None,
             'gps': {
                 'latitude': None,
-                'longitude': None
+                'longitude': None,
             },
             'birth': {
                 'year': year,
                 'month': month,
-                'day': day
+                'day': day,
             }
         }
 
