@@ -2,7 +2,27 @@
 Mocked IoT devices for testing purposes
 
 ## To-do
-- [ ] Parameter generation
+- [x] Parameter generation
+  - [x] Blood pressure systolic
+  - [x] Blood pressure diastolic
+  - [x] Pulse
+  - [x] Body temperature
+  - [x] Saturation
+  - [x] Blood glucose content
+  - [x] Electrodermal response
+  - [x] Blood alcohol content
+  - [x] Steps
+  - [x] Cholesterol
+    - [x] LDL
+    - [x] HDL
+  - [ ] GPS coordinates
+    - [ ] Longitude
+    - [ ] Latitude
+  - [x] Date of birth
+    - [x] Year
+    - [x] Month
+    - [x] Day
+- [ ] Parameter updates
   - [ ] Blood pressure systolic
   - [ ] Blood pressure diastolic
   - [ ] Pulse
@@ -18,9 +38,5 @@ Mocked IoT devices for testing purposes
   - [ ] GPS coordinates
     - [ ] Longitude
     - [ ] Latitude
-  - [x] Date of birth
-    - [x] Year
-    - [x] Month
-    - [x] Day
 - [x] REST Client
 - [x] Startup script (to run devices simultaneously)
