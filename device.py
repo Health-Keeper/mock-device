@@ -32,6 +32,7 @@ class Device(threading.Thread):
         self._ready_event = threading.Event()
 
         self._url = None
+        self._session = requests.Session
 
         year, month, day = self._init_birth(18, 100)
 
@@ -130,7 +131,7 @@ class Device(threading.Thread):
 
         # Testing
         print(self._id)
-        # return requests.post(self._url, json=self._parameters)
+        # return self._session.post(self._url, json=self._parameters)
 
 
     @staticmethod
