@@ -12,13 +12,13 @@ class Startup(object):
         self._address = address
         self._port = port
         self._devices = [Device(device_id) for device_id in range(n_devices)]
+        atexit.register(self.stop)
 
     def start(self):
         for device in self._devices:
             device.bind_server(self._address, self._port)
             device.run()
 
-    @atexit.register
     def stop(self):
         for device in self._devices:
             if not device.is_running():
@@ -29,12 +29,21 @@ class Startup(object):
     def application(argv=None):
         parser = argparse.ArgumentParser(prog=__file__,
                                          description="IoT device simulator")
+
         parser.add_argument('-n', '--devices', type=int, action='store',
-                            default=10, help="number of devices to simulate")
+                            default=10, metavar='N',
+                            help="number of devices to simulate")
+
+        parser.add_argument('-a', '--address', type=str, action='store',
+                            default='localhost', metavar='ADDRESS',
+                            help="API server address")
+
+        parser.add_argument('-p', '--port', type=int, action='store',
+                            default=80, metavar='PORT', help="API server port")
 
         args = parser.parse_args(argv)
 
-        return Startup(args.devices)
+        return Startup(args.address, args.port, args.devices)
 
 
 if __name__ == '__main__':
