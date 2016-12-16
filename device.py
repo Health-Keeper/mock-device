@@ -12,13 +12,13 @@ import requests
 class Device(threading.Thread):
     """ Mocked IoT device """
 
-    _PRINT_LOCK = threading.Lock()
-
     URL_SCHEME = 'http'
     URL_PATH = '/api/device/send'
     URL_PARAMS = ''
     URL_QUERY = ''
     URL_FRAGMENT = ''
+
+    _PRINT_LOCK = threading.Lock()
 
 
     def __init__(self, device_id, delay=1):
@@ -80,14 +80,13 @@ class Device(threading.Thread):
     def run(self):
         """ Run device thread """
         while self.is_running():
-            self._stop_event.wait(self._delay)
             try:
+                self._stop_event.wait(self._delay)
                 self._update()
                 self._send()
             except Exception as e:
                 with self._PRINT_LOCK:
                     print(e, file=sys.stderr)
-
 
     def stop(self):
         """ Stop device thread execution """
@@ -129,7 +128,9 @@ class Device(threading.Thread):
             raise ConnectionError(("No target server bound for device ID "
                                    "'%s'.") % self._id)
 
-        return requests.post(self._url, json=self._parameters)
+        # Testing
+        print(self._id)
+        # return requests.post(self._url, json=self._parameters)
 
 
     @staticmethod

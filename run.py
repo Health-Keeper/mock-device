@@ -15,15 +15,17 @@ class Startup(object):
     def __init__(self, address, port, n_devices=10):
         self._address = address
         self._port = port
+
         self._devices = [Device(device_id) for device_id in range(n_devices)]
+
         atexit.register(self.stop)
 
     def start(self):
         i = 0
         with progressbar.ProgressBar(max_value=len(self._devices), widgets=[
-                "Devices: ", progressbar.Counter(), " ",
+                " Starting devices: ", progressbar.Counter(), " ",
                 progressbar.Bar(),
-                " ", progressbar.Percentage()
+                " ", progressbar.Percentage(), " "
         ]) as bar:
             for device in self._devices:
                 time.sleep(numpy.random.uniform())
@@ -72,4 +74,4 @@ if __name__ == '__main__':
     # Wait for user interruption
     input('Windows: Ctrl-Z+Enter')
 
-    # startup.stop()
+    startup.stop()

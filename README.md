@@ -23,4 +23,4 @@ Mocked IoT devices for testing purposes
     - [x] Month
     - [x] Day
 - [x] REST Client
-- [ ] Startup script (to run devices simultaneously)
+- [x] Startup script (to run devices simultaneously)
