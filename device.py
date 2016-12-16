@@ -36,7 +36,7 @@ class Device(threading.Thread):
             'blood_pressure': {
                 'systolic': None,
                 'diastolic': None
-            }
+            },
             'pulse': None,
             'saturation': None,
             'electrodermal_response': None,
