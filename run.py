@@ -1,11 +1,11 @@
 # -*- coding: utf-8 -*-
-import atexit
 import argparse
+import atexit
 import time
 
 import numpy
-import progressbar
 
+import progressbar
 from device import Device
 
 
@@ -13,6 +13,7 @@ class Startup(object):
     """ Simulation startup """
 
     def __init__(self, address, port, n_devices=10):
+        """ Create startup object """
         self._address = address
         self._port = port
 
@@ -21,6 +22,7 @@ class Startup(object):
         atexit.register(self.stop)
 
     def start(self):
+        """ Start devices """
         i = 0
         with progressbar.ProgressBar(max_value=len(self._devices), widgets=[
                 " Starting devices: ", progressbar.Counter(), " ",
@@ -40,6 +42,7 @@ class Startup(object):
             device.ready()
 
     def stop(self):
+        """ Stop devices """
         for device in self._devices:
             if not device.is_running():
                 continue
@@ -47,6 +50,7 @@ class Startup(object):
 
     @staticmethod
     def application(argv=None):
+        """ Initialize as application """
         parser = argparse.ArgumentParser(prog=__file__,
                                          description="IoT device simulator")
 

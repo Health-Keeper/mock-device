@@ -1,16 +1,14 @@
 # -*- coding: utf-8 -*-
 import datetime
+import sys
 import threading
 import time
 import urllib.parse
-import sys
-
-from scipy.stats import norm
-from scipy.stats import beta
 from random import randint
 
 import numpy
 import requests
+from scipy.stats import beta, norm
 
 
 class Device(threading.Thread):
@@ -39,16 +37,25 @@ class Device(threading.Thread):
         self._session = requests.Session
 
         year, month, day = self._init_birth(18, 100)
+
         systolic = self._init_systolic_pressure(130)
         diastolic = self._init_diastolic_pressure(77)
+
         ldl = self._init_cholesterol_ldl(90, 200)
         hdl = self._init_cholesterol_hdl(30, 70)
+
         steps = self._init_steps(delay)
+
         pulse = self._init_pulse(60,100)
+
         saturation = self._init_saturation(0,100)
+
         body_temperature = self._init_body_temperature(36.5,37.5)
+
         electrodermal_response = self._init_electrodermal_response(0.3,0.37)
+
         blood_alcohol_content = self._init_blood_alcohol_content(0, 0.5)
+
         blood_glucose_content = self._init_blood_glucose_content(50,380)
 
         self._parameters = {
@@ -120,6 +127,7 @@ class Device(threading.Thread):
 
 
     def is_ready(self):
+        """ Check if device is ready for processing """
         return self._ready_event.is_set()
 
 
@@ -144,10 +152,7 @@ class Device(threading.Thread):
             raise ConnectionError(("No target server bound for device ID "
                                    "'%s'.") % self._id)
 
-        # Testing
-        with self._PRINT_LOCK:
-            print(self._id)
-            
+        # Disabled until target server is not online
         # return self._session.post(self._url, json=self._parameters)
 
 
@@ -162,61 +167,88 @@ class Device(threading.Thread):
 
         return year, month, day
 
-    #good ~130
+
     @staticmethod
     def _init_systolic_pressure(avg=130):
-        systolic = norm.rvs(loc=avg, scale=20, size=1, random_state=None)
+        """ Generate initial systolic blood pressure """
+        # good ~130
+        return norm.rvs(loc=avg, scale=20, size=1, random_state=None)
 
-        return systolic
 
-    #good ~77
     @staticmethod
     def _init_diastolic_pressure(avg=77):
-        diastolic = norm.rvs(loc=avg, scale=13, size=1, random_state=None)
+        """ Generate initial diastolic blood pressure """
+        # good ~77
+        return norm.rvs(loc=avg, scale=13, size=1, random_state=None)
 
-        return diastolic
 
-    #best=90, worst=200
     @staticmethod
     def _init_cholesterol_ldl(minimum=90, maximum=200):
-        return beta.rvs(a=0.3, b=3, loc=minimum, scale=maximum-minimum, size=1, random_state=None)
+        """ Generate initial LDL cholesterol """
+        # best=90, worst=200
+        return beta.rvs(a=0.3, b=3, loc=minimum, scale=maximum-minimum, size=1,
+                        random_state=None)
 
-    #best=70, worst=30
+
     @staticmethod
     def _init_cholesterol_hdl(minimum=30, maximum=70):
-        return beta.rvs(a=2, b=0.1,  loc=minimum, scale=maximum-minimum, size=1, random_state=None)
+        """ Generate initial HDL cholesterol """
+        # best=70, worst=30
+        return beta.rvs(a=2, b=0.1,  loc=minimum, scale=maximum-minimum, size=1,
+                        random_state=None)
 
-    #average 1 step per second
+
     @staticmethod
-    def _init_steps(delay):
+    def _steps(delay):
+        """ Generate steps """
+        # average 1 step per second
         return randint(0,(int)(delay/1000))
 
-    #mingood = 60 max good=100, other values are bad
+
     @staticmethod
     def _init_pulse(minimum=60, maximum=100):
-        return norm.rvs(loc=(maximum+minimum)/2, scale=12, size=1, random_state=None)
+        """ Generate initial pulse """
+        # mingood = 60 max good=100, other values are bad
+        return norm.rvs(loc=(maximum+minimum)/2, scale=12, size=1,
+                        random_state=None)
 
-    #0=RIP, <55% - loss of consciousness, 55-65 - impaired mental function, 90+ normal
+
     @staticmethod
     def _init_saturation(minimum=0, maximum=100):
-        return beta.rvs(a=15, b=0.5, loc=minimum, scale=maximum-minimum, size=1, random_state=None)
+        """ Generate initial saturation """
+        # 0=RIP, <55% - loss of consciousness, 55-65 - impaired mental function,
+        # 90+ normal
+        return beta.rvs(a=15, b=0.5, loc=minimum, scale=maximum-minimum, size=1,
+                        random_state=None)
 
-    #normal 36.5-37.5
+
     @staticmethod
     def _init_body_temperature(minimum=36.5, maximum= 37.5):
-        return norm.rvs(loc=(maximum+minimum)/2, scale=0.7, size=1, random_state=None)
+        """ Generate initial body temperature """
+        # normal 36.5-37.5
+        return norm.rvs(loc=(maximum+minimum)/2, scale=0.7, size=1,
+                        random_state=None)
 
-    #should be between 0.3-0.37
+
     @staticmethod
     def _init_electrodermal_response(minimum=0.3, maximum=0.37):
-        return norm.rvs(loc=(minimum+maximum)/2, scale=0.01, size=1, random_state=None)
+        """ Generate initial electrodermal response """
+        # should be between 0.3-0.37
+        return norm.rvs(loc=(minimum+maximum)/2, scale=0.01, size=1,
+                        random_state=None)
 
-    #normal=0, 0.5 alcohol poisoning
+
     @staticmethod
     def _init_blood_alcohol_content(minimum=0, maximum=0.5):
-        return beta.rvs(a=0.05, b=2, loc=minimum, scale=maximum-minimum, size=1, random_state=None)
+        """ Generate initial blood alcohol content """
+        # normal=0, 0.5 alcohol poisoning
+        return beta.rvs(a=0.05, b=2, loc=minimum, scale=maximum-minimum, size=1,
+                        random_state=None)
 
-    #215+ action sugessted
+
     @staticmethod
     def _init_blood_glucose_content(minimum=50, maximum=380):
-        return beta.rvs(a=0.05, b=2, loc=minimum, scale=maximum - minimum, size=1, random_state=None)
+        """ Generate initial blood glucose content """
+        # 215+ action sugessted
+        return beta.rvs(a=0.05, b=2, loc=minimum, scale=maximum - minimum,
+                        size=1, random_state=None)
