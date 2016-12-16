@@ -32,7 +32,7 @@ class Device(threading.Thread):
 
         self._parameters = {
             'id': self._id,  # constant
-            'timestamp': time.time()
+            'timestamp': time.time(),
             'blood_pressure': {
                 'systolic': None,
                 'diastolic': None
