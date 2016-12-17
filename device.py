@@ -8,7 +8,7 @@ from random import randint
 
 import numpy
 import requests
-from scipy.stats import beta, norm
+import scipy.stats
 
 
 class Device(threading.Thread):
@@ -171,48 +171,45 @@ class Device(threading.Thread):
 
 
     @staticmethod
-    def _init_systolic_pressure(avg=130):
+    def _init_systolic_pressure(average=130):
         """ Generate initial systolic blood pressure """
         # good ~130
-        return norm.rvs(loc=avg, scale=20, size=1, random_state=None)
+        return scipy.stats.norm.rvs(average, 20)
 
 
     @staticmethod
-    def _init_diastolic_pressure(avg=77):
+    def _init_diastolic_pressure(average=77):
         """ Generate initial diastolic blood pressure """
         # good ~77
-        return norm.rvs(loc=avg, scale=13, size=1, random_state=None)
+        return scipy.stats.norm.rvs(average, 13)
 
 
     @staticmethod
     def _init_cholesterol_ldl(minimum=90, maximum=200):
         """ Generate initial LDL cholesterol """
         # best=90, worst=200
-        return beta.rvs(a=0.3, b=3, loc=minimum, scale=maximum-minimum, size=1,
-                        random_state=None)
+        return scipy.stats.beta.rvs(0.3, 3, minimum, maximum - minimum)
 
 
     @staticmethod
     def _init_cholesterol_hdl(minimum=30, maximum=70):
         """ Generate initial HDL cholesterol """
         # best=70, worst=30
-        return beta.rvs(a=2, b=0.1,  loc=minimum, scale=maximum-minimum, size=1,
-                        random_state=None)
+        return scipy.stats.beta.rvs(2, 0.1, minimum, maximum - minimum)
 
 
     @staticmethod
     def _steps(delay):
         """ Generate steps """
         # average 1 step per second
-        return randint(0,(int)(delay/1000))
+        return numpy.random.randint(0, (int) (1.8 * delay))
 
 
     @staticmethod
     def _init_pulse(minimum=60, maximum=100):
         """ Generate initial pulse """
         # mingood = 60 max good=100, other values are bad
-        return norm.rvs(loc=(maximum+minimum)/2, scale=12, size=1,
-                        random_state=None)
+        return scipy.stats.norm.rvs((maximum + minimum) / 2, 12)
 
 
     @staticmethod
@@ -220,37 +217,32 @@ class Device(threading.Thread):
         """ Generate initial saturation """
         # 0=RIP, <55% - loss of consciousness, 55-65 - impaired mental function,
         # 90+ normal
-        return beta.rvs(a=15, b=0.5, loc=minimum, scale=maximum-minimum, size=1,
-                        random_state=None)
+        return scipy.stats.beta.rvs(15, 0.5, minimum, maximum - minimum)
 
 
     @staticmethod
     def _init_body_temperature(minimum=36.5, maximum= 37.5):
         """ Generate initial body temperature """
         # normal 36.5-37.5
-        return norm.rvs(loc=(maximum+minimum)/2, scale=0.7, size=1,
-                        random_state=None)
+        return scipy.stats.norm.rvs((maximum + minimum) / 2, 0.7)
 
 
     @staticmethod
     def _init_electrodermal_response(minimum=0.3, maximum=0.37):
         """ Generate initial electrodermal response """
         # should be between 0.3-0.37
-        return norm.rvs(loc=(minimum+maximum)/2, scale=0.01, size=1,
-                        random_state=None)
+        return scipy.stats.norm.rvs((minimum + maximum) / 2, 0.01)
 
 
     @staticmethod
     def _init_blood_alcohol_content(minimum=0, maximum=0.5):
         """ Generate initial blood alcohol content """
         # normal=0, 0.5 alcohol poisoning
-        return beta.rvs(a=0.05, b=2, loc=minimum, scale=maximum-minimum, size=1,
-                        random_state=None)
+        return scipy.stats.beta.rvs(0.05, 2, minimum, maximum - minimum)
 
 
     @staticmethod
     def _init_blood_glucose_content(minimum=50, maximum=380):
         """ Generate initial blood glucose content """
         # 215+ action sugessted
-        return beta.rvs(a=0.05, b=2, loc=minimum, scale=maximum - minimum,
-                        size=1, random_state=None)
+        return scipy.stats.beta.rvs(0.05, 2, minimum, maximum - minimum)
