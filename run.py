@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
 import argparse
 import atexit
-import resource
 import time
 
 import numpy
@@ -40,15 +39,12 @@ class Startup(object):
                 bar.update(i)
                 i += 1
 
+        print("Devices start broadcasting.")
+
         for device in self._devices:
             device.ready()
 
-        # Show memory peak usage
-        memory_usage = resource.getrusage(
-            resource.RUSAGE_SELF | resource.RUSAGE_CHILDREN
-        ).ru_maxrss / 1024
-
-        print("Memory used: %.2f KiB" % memory_usage)
+        print("All devices are online.")
 
 
     def stop(self):
