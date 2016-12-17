@@ -262,7 +262,7 @@ class Device(threading.Thread):
                     Limits.LON.d)
         return lat, lon
 
-    def _gps_add_meters(lat, lon, d_north, d_east):
+    def _gps_add_meters(self, lat, lon, d_north, d_east):
         """ Add specified amount of meters to GPS position """
         d_lat = d_north / self._GPS_R
         d_lon = d_east / (self._GPS_R * numpy.cos(lat * numpy.pi / 180))
