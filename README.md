@@ -1,6 +1,38 @@
 # mock-device
 Mocked IoT devices for testing purposes
 
+## Request file format (JSON)
+```
+{
+    'id': constant_string,
+    'timestamp': posix_timestamp,
+    'blood_pressure': {
+        'systolic': float,
+        'diastolic': float,
+    },
+    'pulse': float,
+    'saturation': float,
+    'electrodermal_response': float,
+    'body_temperature': float,
+    'blood_glucose_content': float,
+    'blood_alcohol_content': float,
+    'cholesterol': {
+        'ldl': float,
+        'hdl': float,
+    },
+    'steps': integer,
+    'gps': {
+        'latitude': float,
+        'longitude': float,
+    },
+    'birth': {
+        'year': year,
+        'month': month,
+        'day': day,
+    }
+}
+```
+
 ## To-do
 - [x] Parameter generation
   - [x] Blood pressure systolic
