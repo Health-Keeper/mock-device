@@ -298,3 +298,18 @@ class Device(threading.Thread):
             str(self._id),
             str(self._parameters)
         )
+
+    @staticmethod
+    def normalize(value, m, M, precision):
+        return round((value - m) / (M - m), precision)
+
+    @staticmethod
+    def update_value(value, m, M, delay, precision, multiplier):
+        if  Device.normalize(value, m, M ,precision) > numpy.random.uniform(0, 1):
+            value += random(((m + M) / 2) * multiplier * delay, precision)
+            if value > M:
+                value = M
+        else:
+            value -= random(((m + M) / 2) * multiplier * delay, precision)
+            if value < m:
+                value = m
