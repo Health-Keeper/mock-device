@@ -39,12 +39,13 @@ class Startup(object):
                 bar.update(i)
                 i += 1
 
-        print("Devices start broadcasting.")
+        print("Devices start broadcasting.\n")
 
         for device in self._devices:
+            print(str(device), end='\n\n')
             device.ready()
 
-        print("All devices are online.")
+        print("All devices are online.\n")
 
 
     def stop(self):

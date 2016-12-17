@@ -82,8 +82,8 @@ class Device(threading.Thread):
             },
             'steps': steps,
             'gps': {
-                'latitude': None,
-                'longitude': None,
+                'latitude': lat,
+                'longitude': lon,
             },
             'birth': {
                 'year': year,
@@ -176,87 +176,87 @@ class Device(threading.Thread):
 
 
     @staticmethod
-    def _init_systolic_pressure(average=130):
+    def _init_systolic_pressure(avg=130):
         """ Generate initial systolic blood pressure """
         # good ~130
-        return scipy.stats.norm.rvs(average, 20)
+        return round(scipy.stats.norm.rvs(avg, 20), 1)
 
 
     @staticmethod
-    def _init_diastolic_pressure(average=77):
+    def _init_diastolic_pressure(avg=77):
         """ Generate initial diastolic blood pressure """
         # good ~77
-        return scipy.stats.norm.rvs(average, 13)
+        return round(scipy.stats.norm.rvs(avg, 13), 1)
 
 
     @staticmethod
-    def _init_cholesterol_ldl(minimum=90, maximum=200):
+    def _init_cholesterol_ldl(m=90, M=200):
         """ Generate initial LDL cholesterol """
         # best=90, worst=200
-        return scipy.stats.beta.rvs(0.3, 3, minimum, maximum - minimum)
+        return round(scipy.stats.beta.rvs(0.3, 3, m, M - m), 2)
 
 
     @staticmethod
-    def _init_cholesterol_hdl(minimum=30, maximum=70):
+    def _init_cholesterol_hdl(m=30, M=70):
         """ Generate initial HDL cholesterol """
         # best=70, worst=30
-        return scipy.stats.beta.rvs(2, 0.1, minimum, maximum - minimum)
+        return round(scipy.stats.beta.rvs(2, 0.1, m, M - m), 2)
 
 
     @staticmethod
     def _steps(delay):
         """ Generate steps """
         # average 1 step per second
-        return numpy.random.randint(0, (int) (1.8 * delay))
+        return round(numpy.random.uniform(0, delay), 0)
 
 
     @staticmethod
-    def _init_pulse(minimum=60, maximum=100):
+    def _init_pulse(m=60, M=100):
         """ Generate initial pulse """
         # mingood = 60 max good=100, other values are bad
-        return scipy.stats.norm.rvs((maximum + minimum) / 2, 12)
+        return round(scipy.stats.norm.rvs((M + m) / 2, 12), 1)
 
 
     @staticmethod
-    def _init_saturation(minimum=0, maximum=100):
+    def _init_saturation(m=0, M=100):
         """ Generate initial saturation """
         # 0=RIP, <55% - loss of consciousness, 55-65 - impaired mental function,
         # 90+ normal
-        return scipy.stats.beta.rvs(15, 0.5, minimum, maximum - minimum)
+        return round(scipy.stats.beta.rvs(15, 0.5, m, M - m), 2)
 
 
     @staticmethod
-    def _init_body_temperature(minimum=36.5, maximum= 37.5):
+    def _init_body_temperature(m=36.5, M=37.5):
         """ Generate initial body temperature """
         # normal 36.5-37.5
-        return scipy.stats.norm.rvs((maximum + minimum) / 2, 0.7)
+        return round(scipy.stats.norm.rvs((M + m) / 2, 0.7), 2)
 
 
     @staticmethod
-    def _init_electrodermal_response(minimum=0.3, maximum=0.37):
+    def _init_electrodermal_response(m=0.3, M=0.37):
         """ Generate initial electrodermal response """
         # should be between 0.3-0.37
-        return scipy.stats.norm.rvs((minimum + maximum) / 2, 0.01)
+        return round(scipy.stats.norm.rvs((M + m) / 2, 0.01), 4)
 
 
     @staticmethod
-    def _init_blood_alcohol_content(minimum=0, maximum=0.5):
+    def _init_blood_alcohol_content(m=0, M=0.5):
         """ Generate initial blood alcohol content """
         # normal=0, 0.5 alcohol poisoning
-        return scipy.stats.beta.rvs(0.05, 2, minimum, maximum - minimum)
+        return round(scipy.stats.beta.rvs(0.05, 2, m, M - m), 3)
 
 
     @staticmethod
-    def _init_blood_glucose_content(minimum=50, maximum=380):
+    def _init_blood_glucose_content(m=50, M=380):
         """ Generate initial blood glucose content """
         # 215+ action sugessted
-        return scipy.stats.beta.rvs(0.05, 2, minimum, maximum - minimum)
+        return round(scipy.stats.beta.rvs(0.05, 2, m, M - m), 1)
 
     @staticmethod
     def _init_gps(limit_lat, limit_lon):
         """ Generate initial GPS position """
-        lat = numpy.random.uniform(limit_lat.min, limit_lat.max)
-        lon = numpy.random.uniform(limit_lon.min, limit_lon.max)
+        lat = round(numpy.random.uniform(limit_lat.min, limit_lat.max), 8)
+        lon = round(numpy.random.uniform(limit_lon.min, limit_lon.max), 8)
         return lat, lon
 
     def _gps_add_meters(lat, lon, d_north, d_east):
@@ -267,7 +267,13 @@ class Device(threading.Thread):
         n_lat = lat + d_lat * 180 / numpy.pi
         n_lon = lon + d_lon * 180 / numpy.pi
 
-        n_lat = (n_lat + 90) % 180 - 90    # -90 to 90
-        n_lon = (n_lon + 180) % 360 - 180  # -180 to 180
+        n_lat = round((n_lat + 90) % 180 - 90, 8)    # -90 to 90
+        n_lon = round((n_lon + 180) % 360 - 180, 8)  # -180 to 180
 
         return n_lat, n_lon
+
+    def __str__(self):
+        return 'Device(id=%s, parameters=%s)' % (
+            str(self._id),
+            str(self._parameters)
+        )
