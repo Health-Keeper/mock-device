@@ -4,11 +4,12 @@ import sys
 import threading
 import time
 import urllib.parse
-from random import randint
 
 import numpy
 import requests
 import scipy.stats
+
+from limits import Limits
 
 
 class Device(threading.Thread):
@@ -36,7 +37,7 @@ class Device(threading.Thread):
         self._url = None
         self._session = requests.Session
 
-        year, month, day = self._init_birth(18, 100)
+        year, month, day = self._init_birth(Limits.AGE.min, Limits.AGE.max)
 
         systolic = self._init_systolic_pressure(130)
         diastolic = self._init_diastolic_pressure(77)
