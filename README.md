@@ -15,9 +15,9 @@ Mocked IoT devices for testing purposes
   - [x] Cholesterol
     - [x] LDL
     - [x] HDL
-  - [ ] GPS coordinates
-    - [ ] Longitude
-    - [ ] Latitude
+  - [x] GPS coordinates
+    - [x] Longitude
+    - [x] Latitude
   - [x] Date of birth
     - [x] Year
     - [x] Month
