@@ -58,8 +58,8 @@ class Device(threading.Thread):
         self._bpd = self._init_bpd(Limits.BPD.avg)
         self._pul = self._init_pul(Limits.PUL.min, Limits.PUL.max)
         self._sat = self._init_sat(Limits.SAT.min, Limits.SAT.max)
-        self._edr = self._init_edr(Limits.EDR.min, Limits.EDR.max)
-        self._btp = self._init_btp(Limits.BTP.min, Limits.BTP.max)
+        self._edr = self._init_edr(Limits.EDR.avg)
+        self._btp = self._init_btp(Limits.BTP.avg)
         self._bgc = self._init_bgc(Limits.BGC.min, Limits.BGC.max)
         self._bac = self._init_bac(Limits.BAC.min, Limits.BAC.max)
         self._ldl = self._init_ldl(Limits.LDL.min, Limits.LDL.max)
@@ -184,7 +184,7 @@ class Device(threading.Thread):
 
 
     @staticmethod
-    def _init_bpd(avg=77):
+    def _init_bpd(avg=75):
         """ Generate initial diastolic blood pressure """
         # good ~77
         return round(scipy.stats.norm.rvs(avg, 13), Limits.BPD.d)
@@ -227,17 +227,17 @@ class Device(threading.Thread):
 
 
     @staticmethod
-    def _init_btp(m=36.5, M=37.5):
+    def _init_btp(avg=37):
         """ Generate initial body temperature """
         # normal 36.5-37.5
-        return round(scipy.stats.norm.rvs((M + m) / 2, 0.7), Limits.BTP.d)
+        return round(scipy.stats.norm.rvs(avg, 0.7), Limits.BTP.d)
 
 
     @staticmethod
-    def _init_edr(m=0.3, M=0.37):
+    def _init_edr(avg=0.325):
         """ Generate initial electrodermal response """
         # should be between 0.3-0.37
-        return round(scipy.stats.norm.rvs((M + m) / 2, 0.01), Limits.EDR.d)
+        return round(scipy.stats.norm.rvs(avg, 0.02), Limits.EDR.d)
 
 
     @staticmethod
