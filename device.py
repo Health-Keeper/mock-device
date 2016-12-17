@@ -23,6 +23,8 @@ class Device(threading.Thread):
 
     _PRINT_LOCK = threading.Lock()
 
+    GPS_R = 6478137  # earth's radius in meters
+
 
     def __init__(self, device_id, delay=1):
         """ Initialize parameters """
@@ -58,6 +60,8 @@ class Device(threading.Thread):
         blood_alcohol_content = self._init_blood_alcohol_content(0, 0.5)
 
         blood_glucose_content = self._init_blood_glucose_content(50,380)
+
+        lat, lon = self._init_gps(Limits.GPS_LATITUDE, Limits.GPS_LONGITUDE)
 
         self._parameters = {
             'id': self._id,  # constant
@@ -247,3 +251,23 @@ class Device(threading.Thread):
         """ Generate initial blood glucose content """
         # 215+ action sugessted
         return scipy.stats.beta.rvs(0.05, 2, minimum, maximum - minimum)
+
+    @staticmethod
+    def _init_gps(limit_lat, limit_lon):
+        """ Generate initial GPS position """
+        lat = numpy.random.uniform(limit_lat.min, limit_lat.max)
+        lon = numpy.random.uniform(limit_lon.min, limit_lon.max)
+        return lat, lon
+
+    def _gps_add_meters(lat, lon, d_north, d_east):
+        """ Add specified amount of meters to GPS position """
+        d_lat = distance_north / self.GPS_R
+        d_lon = distance_east / (self.GPS_R * numpy.cos(lat * numpy.pi / 180))
+
+        n_lat = lat + d_lat * 180 / numpy.pi
+        n_lon = lon + d_lon * 180 / numpy.pi
+
+        n_lat = (n_lat + 90) % 180 - 90    # -90 to 90
+        n_lon = (n_lon + 180) % 360 - 180  # -180 to 180
+
+        return n_lat, n_lon

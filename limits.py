@@ -19,5 +19,5 @@ class Limits(object):
     BLOOD_ALCOHOL_CONTENT = Limit(0, None)
     CHOLESTEROL_LDL = Limit(None, None)
     CHOLESTEROL_HDL = Limit(None, None)
-    GPS_LATITUDE = Limit(None, None)
-    GPS_LONGITUDE = Limit(None, None)
+    GPS_LATITUDE = Limit(-90, 90)
+    GPS_LONGITUDE = Limit(-180, 180)
