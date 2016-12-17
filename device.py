@@ -151,6 +151,12 @@ class Device(threading.Thread):
         self._parameters['timestamp'] = time.time()
         self._parameters['steps'] = self._steps(self._delay)
 
+        lat, lon = self._update_gps(self._parameters['gps']['latitude'],
+                                    self._parameters['gps']['longitude'],
+                                    self._delay)
+        self._parameters['gps']['latitude'] = lat
+        self._parameters['gps']['longitude'] = lon
+
 
     def _send(self):
         """ Send device parameters to target server """
@@ -252,6 +258,18 @@ class Device(threading.Thread):
         """ Generate initial blood glucose content """
         # 215+ action sugessted
         return round(scipy.stats.beta.rvs(0.05, 2, m, M - m), Limits.BGC.d)
+
+    @staticmethod
+    def _update_gps(lat, lon, delta_time):
+        """ Update GPS position """
+        mps = numpy.random.uniform(0, 2)
+        angle = numpy.random.uniform(0, 2 * numpy.pi)
+
+        d_north = mps * numpy.cos(angle) * delta_time
+        d_east = -mps * numpy.sin(angle) * delta_time
+
+        return self._gps_add_meters(lat, lon, d_north, d_east)
+
 
     @staticmethod
     def _init_gps(limit_lat, limit_lon):
