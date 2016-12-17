@@ -276,23 +276,28 @@ class Device(threading.Thread):
 
         return n_lat, n_lon
 
+
+    @staticmethod
+    def _update_value(parameter, alfa, limit, delay):
+        """ Update value """
+        normalized = round((parameter - limit.min) / (limit.max - limit.min),
+                           limit.d)
+
+        delta = random(((limit.min, limit.max) / 2) * alfa * delay, limit.d)
+
+        if  normalized > numpy.random.uniform(0, 1):
+            parameter += delta
+            if parameter > limit.max:
+                parameter = limit.max
+        else:
+            parameter -= delta
+            if parameter < limit.min:
+                parameter = limit.min
+
+
     def __str__(self):
+        """ Format device as string """
         return 'Device(id=%s, parameters=%s)' % (
             str(self._id),
             str(self._parameters)
         )
-
-    @staticmethod
-    def normalize(value, m, M, precision):
-        return round((value - m) / (M - m), precision)
-
-    @staticmethod
-    def update_value(value, m, M, delay, precision, multiplier):
-        if  Device.normalize(value, m, M ,precision) > numpy.random.uniform(0, 1):
-            value += random(((m + M) / 2) * multiplier * delay, precision)
-            if value > M:
-                value = M
-        else:
-            value -= random(((m + M) / 2) * multiplier * delay, precision)
-            if value < m:
-                value = m
