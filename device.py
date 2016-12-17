@@ -65,7 +65,6 @@ class Device(threading.Thread):
         self._ldl = self._init_ldl(Limits.LDL.min, Limits.LDL.max)
         self._hdl = self._init_hdl(Limits.HDL.min, Limits.HDL.max)
         self._gps = self._init_gps(Limits.LAT, Limits.LON)
-        self._birth = self._init_birth(Limits.AGE.min, Limits.AGE.max)
 
         lat, lon = self._gps
         y, m, d = self._birth
@@ -92,11 +91,6 @@ class Device(threading.Thread):
                 'latitude': lat,
                 'longitude': lon,
             },
-            'birth': {
-                'year': y,
-                'month': m,
-                'day': d,
-            }
         }
 
 
@@ -169,17 +163,6 @@ class Device(threading.Thread):
 
         # Disabled until target server is not online
         # return self._session.post(self._url, json=self._parameters)
-
-
-    def _init_birth(self, m=18, M=100):
-        """ Generate random birth date """
-        age = int((M - m) * numpy.random.beta(2, 4) + m)
-
-        year = datetime.date.today().year - age
-        month = 1 + numpy.random.randint(12)
-        day = 1 + numpy.random.randint(self._MONTH[month])
-
-        return year, month, day
 
 
     @staticmethod
