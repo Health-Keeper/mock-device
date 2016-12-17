@@ -35,8 +35,8 @@ Mocked IoT devices for testing purposes
   - [ ] Cholesterol
     - [ ] LDL
     - [ ] HDL
-  - [ ] GPS coordinates
-    - [ ] Longitude
-    - [ ] Latitude
+  - [x] GPS coordinates
+    - [x] Longitude
+    - [x] Latitude
 - [x] REST Client
 - [x] Startup script (to run devices simultaneously)
