@@ -2,22 +2,23 @@
 import collections
 
 
-# A named tuple of values for simple limit handling
-Limit = collections.namedtuple('Limit', ['min', 'max'])
+# A named tuple for simple limit handling
+# minimum maximum average decimals
+Limit = collections.namedtuple('Limit', ['min', 'max', 'avg', 'd'])
 
 
 class Limits(object):
     """ Value limits for device parameters """
-    AGE = Limit(18, 100)
-    BLOOD_PRESSURE_SYSTOLIC = Limit(None, None)
-    BLOOD_PRESSURE_DIASTOLIC = Limit(None, None)
-    PULSE = Limit(None, None)
-    SATURATION = Limit(None, None)
-    ELECTRODERMAL_RESPONSE = Limit(None, None)
-    BODY_TEMPERATURE = Limit(None, None)
-    BLOOD_BLUCOSE_CONTENT = Limit(None, None)
-    BLOOD_ALCOHOL_CONTENT = Limit(0, None)
-    CHOLESTEROL_LDL = Limit(None, None)
-    CHOLESTEROL_HDL = Limit(None, None)
-    GPS_LATITUDE = Limit(-90, 90)
-    GPS_LONGITUDE = Limit(-180, 180)
+    AGE = Limit(18, 100, None, 0)
+    BPS = Limit(None, None, 130, 1)
+    BPD = Limit(None, None, 77, 1)
+    PUL = Limit(60, 100, None, 1)
+    SAT = Limit(0, 100, None, 2)
+    EDR = Limit(0.3, 0.37, None, 4)
+    BTP = Limit(36.5, 37.5, None, 2)
+    BGC = Limit(50, 380, None, 1)
+    BAC = Limit(0, 0.05, None, 3)
+    LDL = Limit(90, 200, None, 2)
+    HDL = Limit(30, 70, None, 2)
+    LAT = Limit(-90, 90, None, 8)
+    LON = Limit(-180, 180, None, 8)
