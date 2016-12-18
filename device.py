@@ -143,6 +143,37 @@ class Device(threading.Thread):
             return
 
         self._parameters['timestamp'] = time.time()
+
+        self._update_value(self._parameters['blood_pressure']['systolic'],
+                           0.01, Limits.BPS, self._delay)
+
+        self._update_value(self._parameters['blood_pressure']['diastolic'],
+                           0.01, Limits.BPD,self._delay)
+
+        self._update_value(self._parameters['pulse'], 0.1, Limits.PUL,
+                           self._delay)
+
+        self._update_value(self._parameters['saturation'], 0.01, Limits.SAT,
+                           self._delay)
+
+        self._update_value(self._parameters['electrodermal_response'], 0.0001,
+                           Limits.EDR, self._delay)
+
+        self._update_value(self._parameters['body_temperature'], 0.01,
+                           Limits.BTP, self._delay)
+
+        self._update_value(self._parameters['blood_glucose_content'], 0.1,
+                           Limits.BGC, self._delay)
+
+        self._update_value(self._parameters['blood_alcohol_content'], 0.001,
+                           Limits.BAC, self._delay)
+
+        self._update_value(self._parameters['cholesterol']['ldl'], 0.01,
+                           Limits.LDL, self._delay)
+
+        self._update_value(self._parameters['cholesterol']['hdl'], 0.01,
+                           Limits.HDL, self._delay)
+
         self._parameters['steps'] = self._steps(self._delay)
 
         lat, lon = self._update_gps(self._parameters['gps']['latitude'],
@@ -278,14 +309,16 @@ class Device(threading.Thread):
 
 
     @staticmethod
-    def _update_value(parameter, alfa, limit, delay):
+    def _update_value(parameter, alfa, base, limit, delay):
         """ Update value """
-        normalized = round((parameter - limit.min) / (limit.max - limit.min),
-                           limit.d)
+        p = self._update_probability(parameter, base, limit)
 
-        delta = random(((limit.min, limit.max) / 2) * alfa * delay, limit.d)
+        delta = round(
+            numpy.random.uniform(0, alpha * (limit.max - limit.min) / 2),
+            limit.d
+        )
 
-        if  normalized > numpy.random.uniform(0, 1):
+        if p < numpy.random.uniform():
             parameter += delta
             if parameter > limit.max:
                 parameter = limit.max
@@ -293,6 +326,11 @@ class Device(threading.Thread):
             parameter -= delta
             if parameter < limit.min:
                 parameter = limit.min
+
+
+    def _update_probability(parameter, base, limit):
+        """ Probability of lowering the parameter """
+        return 0.5 + (parameter - base) / (limit.max - limit.min)
 
 
     def __str__(self):
