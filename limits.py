@@ -9,7 +9,6 @@ Limit = collections.namedtuple('Limit', ['min', 'max', 'avg', 'd'])
 
 class Limits(object):
     """ Value limits for device parameters """
-    AGE = Limit(18, 100, None, 0)
     BPS = Limit(40, 220, 130, 2)
     BPD = Limit(30, 120, 75, 2)
     PUL = Limit(60, 100, None, 1)
